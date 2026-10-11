@@ -370,11 +370,13 @@
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">姓名：</span>
                             <div class="border-b border-stone-400 px-3 min-w-[100px] h-6 flex items-center justify-center font-bold text-stone-900 font-kaiti">
+                                <span id="displayName"> </span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">班別：</span>
                             <div class="border-b border-stone-400 px-3 min-w-[90px] h-6 flex items-center justify-center font-kaiti">
+                                <span id="displayClass"> </span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
@@ -542,7 +544,8 @@
         const PRESET_EMOJIS = ['👑', '🌸', '☀️', '⭐', '🍎', '🌳', '🚗', '🐱', '🐶', '🎈', '📚', '🎵', '🎨', '⚽', '🍦', '🚀', '🏰', '🦁', '🌈', '💡'];
 
         const customPronunciations = {};
-        const customIllustrations = {}; // Holds user customized emoji and word per character index
+        const customIllustrations = {}; 
+        let customSchoolLogoUrl = null; 
         const strokeDataCache = {};
         let currentAnimWriter = null;
         let activeAnimChar = '';
@@ -935,31 +938,34 @@
                 const contentRow = document.createElement('div');
                 contentRow.className = 'flex items-stretch gap-3 overflow-x-auto';
 
-                // Left side big sample cell & optional Illustration box
                 if (showBigSample) {
                     const bigCellWrapper = document.createElement('div');
                     bigCellWrapper.className = 'flex-shrink-0 flex items-center gap-2';
 
-                    // Big Sample Cell
                     const bigCell = createGridCellSVG(char, gridStyle, theme, 1.0, true);
                     bigCellWrapper.appendChild(bigCell);
 
-                    // Illustration Box (If enabled or in Kids Mode)
                     if (showIllustration) {
                         const illustBox = document.createElement('div');
                         illustBox.className = 'w-16 h-16 rounded border bg-white flex flex-col items-center justify-center p-1 relative shadow-xs overflow-hidden';
                         illustBox.style.borderColor = theme.gridBorder;
 
+                        let imgOrEmojiHTML = '';
+                        if (illustInfo.type === 'image' && illustInfo.imageUrl) {
+                            imgOrEmojiHTML = `<img src="${illustInfo.imageUrl}" class="w-9 h-9 object-contain" />`;
+                        } else {
+                            imgOrEmojiHTML = `<span class="text-2xl leading-none">${illustInfo.emoji}</span>`;
+                        }
+
                         illustBox.innerHTML = `
-                            <span class="text-2xl leading-none mb-0.5">${illustInfo.emoji}</span>
-                            <span class="text-[9px] font-serif font-bold text-stone-700 tracking-tighter truncate max-w-full">${illustInfo.word}</span>
+                            ${imgOrEmojiHTML}
+                            <span class="text-[9px] font-serif font-bold text-stone-700 mt-0.5 tracking-tighter truncate max-w-full">${illustInfo.word}</span>
                         `;
                         bigCellWrapper.appendChild(illustBox);
                     }
 
                     contentRow.appendChild(bigCellWrapper);
                 }
-
 
                 // Practice Grid Rows
                 const gridRowsContainer = document.createElement('div');
