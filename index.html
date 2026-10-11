@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -13,7 +14,7 @@
     <!-- html2canvas for image export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- Google Fonts: Noto Serif TC for elegant Chinese typography -->
+    <!-- Google Fonts: Noto Serif TC for Chinese typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -71,7 +72,8 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 border: none !important;
-                padding: 6mm 8mm !important;
+                padding: 5mm 6mm !important;
+                min-height: auto !important;
             }
             @page {
                 size: A4 portrait;
@@ -90,7 +92,6 @@
             box-sizing: border-box;
         }
 
-        /* Custom subtle scrollbar */
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
@@ -146,6 +147,24 @@
                     <h2 class="text-xs font-bold font-serif text-stone-700 tracking-wider uppercase flex items-center gap-2">
                         <i class="fa-solid fa-pen-nib text-sage-600"></i> 姓名與標題設定
                     </h2>
+                </div>
+
+                <!-- School Logo Control -->
+                <div class="p-3 bg-stone-100/80 rounded-lg border border-stone-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer">
+                            <input type="checkbox" id="showSchoolLogo" checked onchange="renderWorksheet()" class="w-4 h-4 text-sage-600 rounded border-stone-300 focus:ring-sage-600">
+                            <span>顯示學校名稱</span>
+                        </label>
+                        <button onclick="resetSchoolLogo()" class="text-[10px] text-amber-700 hover:underline">恢復預設</button>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <label class="cursor-pointer bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 px-2.5 py-1 rounded text-[11px] font-medium flex items-center gap-1.5 transition shadow-xs">
+                            <i class="fa-solid fa-upload text-sage-600"></i> 上傳其他校徽
+                            <input type="file" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                        </label>
+                        <span id="logoStatusTag" class="text-[10px] text-stone-500 font-serif truncate">新界婦孺福利會粉嶺幼兒學校</span>
+                    </div>
                 </div>
 
                 <div>
@@ -294,9 +313,9 @@
                     </h2>
                     <span class="text-[10px] text-amber-700 font-semibold bg-amber-100 px-2 py-0.5 rounded">可上傳圖片</span>
                 </div>
-                <p class="text-[11px] text-stone-500 font-serif">您可以為每個字選擇圖示、輸入自訂組詞，或點擊相機圖示**上傳您自己的圖片**！</p>
+                <p class="text-[11px] text-stone-500 font-serif">您可以為每個字選擇圖示、輸入自訂組詞，或點擊相機圖示上傳圖片！</p>
                 <div id="illustrationEditors" class="space-y-3 pt-1">
-                    <!-- Dynamic Illustration & Custom Image Editors injected here -->
+                    <!-- Dynamic Illustration Editors injected here -->
                 </div>
             </div>
 
@@ -336,7 +355,13 @@
             <div id="worksheetPaper" class="a4-paper print-area rounded p-8 sm:p-10 border border-stone-200 transition-all">
                 
                 <!-- Header Title Section -->
-                <div id="worksheetHeader" class="text-center mb-6 relative border-b pb-4 border-stone-200">
+                <div id="worksheetHeader" class="text-center mb-6 relative border-b pb-4 border-stone-200 min-h-[90px] flex flex-col justify-end">
+                    
+                    <!-- School Logo Top Left Position -->
+                    <div id="schoolLogoContainer" class="absolute left-0 top-0 flex items-center gap-2 max-w-[320px] h-12">
+                        <!-- Rendered dynamically in JS -->
+                    </div>
+
                     <div id="decorLeft" class="absolute left-2 top-0 text-stone-400 opacity-80">
                         <i class="fa-solid fa-star text-lg"></i>
                     </div>
@@ -502,68 +527,82 @@
             '詩': { jyutping: 'si1', pinyin: 'shī', zhuyin: 'ㄕ' },
             '涵': { jyutping: 'ham4', pinyin: 'hán', zhuyin: 'ㄏㄢˊ' },
             '陳': { jyutping: 'can4', pinyin: 'chén', zhuyin: 'ㄔㄣˊ' },
-            '樂': { jyutping: 'lok6', pinyin: 'yuè', zhuyin: 'ㄩㄝˋ' },
-            '軒': { jyutping: 'hin1', pinyin: 'xuān', zhuyin: 'ㄒㄨㄢ' },
+            '樂': { jyutping: 'lok6', pinyin: 'lè', zhuyin: 'ㄌㄜˋ' },
+            '軒': { jyutping: 'hin1', pinyin: 'xuān', zhuyin: 'ㄒㄩㄢ' },
             '張': { jyutping: 'zoeng1', pinyin: 'zhāng', zhuyin: 'ㄓㄤ' },
             '梓': { jyutping: 'zi2', pinyin: 'zǐ', zhuyin: 'ㄗˇ' },
             '童': { jyutping: 'tung4', pinyin: 'tóng', zhuyin: 'ㄊㄨㄥˊ' },
             '李': { jyutping: 'lei5', pinyin: 'lǐ', zhuyin: 'ㄌㄧˇ' },
             '嘉': { jyutping: 'gaa1', pinyin: 'jiā', zhuyin: 'ㄐㄧㄚ' },
-            '欣': { jyutping: 'jan1', pinyin: 'xīn', zhuyin: 'ㄒㄧㄣ' },
-            '黃': { jyutping: 'wong4', pinyin: 'huáng', zhuyin: 'ㄏㄨㄤˊ' },
-            '林': { jyutping: 'lam4', pinyin: 'lín', zhuyin: 'ㄌㄧㄣˊ' },
-            '劉': { jyutping: 'lau4', pinyin: 'liú', zhuyin: 'ㄌㄧㄡˊ' },
-            '吳': { jyutping: 'ng4', pinyin: 'wú', zhuyin: 'ㄨˊ' },
-            '蔡': { jyutping: 'coi3', pinyin: 'cài', zhuyin: 'ㄘㄞˋ' },
-            '楊': { jyutping: 'joeng4', pinyin: 'yáng', zhuyin: 'ㄧㄤˊ' },
-            '許': { jyutping: 'heoi2', pinyin: 'xǔ', zhuyin: 'ㄒㄩˇ' },
-            '鄭': { jyutping: 'zing6', pinyin: 'zhèng', zhuyin: 'ㄓㄥˋ' },
-            '謝': { jyutping: 'ze6', pinyin: 'xiè', zhuyin: 'ㄒㄧㄝˋ' },
-            '郭': { jyutping: 'gwok3', pinyin: 'guō', zhuyin: 'ㄍㄨㄛ' },
-            '曾': { jyutping: 'zang1', pinyin: 'zēng', zhuyin: 'ㄗㄥ' },
-            '邱': { jyutping: 'jau1', pinyin: 'qiū', zhuyin: 'ㄑㄧㄡ' },
-            '廖': { jyutping: 'liu6', pinyin: 'liào', zhuyin: 'ㄌㄧㄠˋ' },
-            '賴': { jyutping: 'laai6', pinyin: 'lài', zhuyin: 'ㄌㄞˋ' }
+            '欣': { jyutping: 'jan1', pinyin: 'xīn', zhuyin: 'ㄒㄧㄣ' }
         };
 
-        // Default Character Illustrations and Associated Words
         const DEFAULT_ILLUSTRATIONS = {
             '王': { emoji: '👑', word: '國王' },
             '詩': { emoji: '📜', word: '詩歌' },
             '涵': { emoji: '💧', word: '涵養' },
-            '陳': { emoji: '🏰', word: '陳設' },
+            '陳': { emoji: '🍊', word: '陳皮' },
             '樂': { emoji: '🎵', word: '快樂' },
             '軒': { emoji: '🚗', word: '軒昂' },
-            '張': { emoji: '🏹', word: '開張' },
+            '張': { emoji: '🏹', word: '張開' },
             '梓': { emoji: '🌳', word: '梓木' },
-            '童': { emoji: '👶', word: '童年' },
-            '李': { emoji: '🍎', word: '李子' },
+            '童': { emoji: '🎈', word: '童年' },
+            '李': { emoji: '🍑', word: '李子' },
             '嘉': { emoji: '🌟', word: '嘉許' },
-            '欣': { emoji: '😊', word: '欣喜' },
-            '黃': { emoji: '🌻', word: '黃金' },
-            '林': { emoji: '🌲', word: '森林' },
-            '劉': { emoji: '⚔️', word: '刀劉' },
-            '吳': { emoji: '🗣️', word: '吳語' },
-            '蔡': { emoji: '🌱', word: '蔡草' },
-            '楊': { emoji: '🍃', word: '楊柳' },
-            '許': { emoji: '💬', word: '許願' },
-            '鄭': { emoji: '🚩', word: '鄭重' },
-            '謝': { emoji: '🙏', word: '謝謝' },
-            '郭': { emoji: '🏯', word: '城郭' },
-            '曾': { emoji: '⏳', word: '曾經' },
-            '邱': { emoji: '⛰️', word: '山邱' },
-            '廖': { emoji: '🎨', word: '廖寥' },
-            '賴': { emoji: '🤝', word: '信賴' }
+            '欣': { emoji: '😊', word: '欣喜' }
         };
 
-        // Preset Quick Emoji Options for Picker
         const PRESET_EMOJIS = ['👑', '🌸', '☀️', '⭐', '🍎', '🌳', '🚗', '🐱', '🐶', '🎈', '📚', '🎵', '🎨', '⚽', '🍦', '🚀', '🏰', '🦁', '🌈', '💡'];
 
         const customPronunciations = {};
-        const customIllustrations = {}; // Holds user customized emoji/image upload per character
+        const customIllustrations = {}; 
+        let customSchoolLogoUrl = null; 
         const strokeDataCache = {};
         let currentAnimWriter = null;
         let activeAnimChar = '';
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                customSchoolLogoUrl = e.target.result;
+                document.getElementById('logoStatusTag').innerText = '已載入自訂校徽';
+                renderWorksheet();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetSchoolLogo() {
+            customSchoolLogoUrl = null;
+            document.getElementById('logoStatusTag').innerText = '新界婦孺福利會粉嶺幼兒學校';
+            renderWorksheet();
+        }
+
+        function renderSchoolLogoHTML() {
+            const container = document.getElementById('schoolLogoContainer');
+            const showLogo = document.getElementById('showSchoolLogo').checked;
+
+            if (!showLogo) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex';
+
+            if (customSchoolLogoUrl) {
+                container.innerHTML = `<img src="${customSchoolLogoUrl}" class="h-10 max-w-[280px] object-contain" />`;
+            } else {
+                // Bilingual School Name without emblem graphic
+                container.innerHTML = `
+                    <div class="flex flex-col justify-center text-left">
+                        <div class="text-[15px] font-bold text-[#8B1E22] font-serif tracking-wide leading-tight">新界婦孺福利會粉嶺幼兒學校</div>
+                        <div class="text-[9px] font-bold text-[#8B1E22] font-sans tracking-wider leading-tight">NTW&JWA FANLING NURSERY SCHOOL</div>
+                    </div>
+                `;
+            }
+        }
 
         function setSampleName(name) {
             document.getElementById('inputName').value = name;
@@ -645,18 +684,15 @@
                     <div class="flex items-center gap-2">
                         ${imagePreviewHTML}
                         
-                        <!-- File Upload Button -->
                         <label class="cursor-pointer bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 px-2.5 py-1 rounded text-[11px] font-medium flex items-center gap-1 transition">
                             <i class="fa-solid fa-camera text-amber-600"></i> 上傳圖片
                             <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(${idx}, event)">
                         </label>
 
-                        <!-- Custom Emoji Input -->
                         <input type="text" value="${info.emoji}" placeholder="圖示"
                             oninput="customIllustrations[${idx}] = { type: 'emoji', emoji: this.value || '🌟', word: '${info.word}', imageUrl: '' }; renderWorksheet();"
                             class="w-10 text-center px-1 py-1 border border-stone-300 rounded text-xs bg-white">
                         
-                        <!-- Word Text Input -->
                         <input type="text" value="${info.word}" placeholder="搭配詞語"
                             oninput="customIllustrations[${idx}] = { type: info.type || 'emoji', emoji: '${info.emoji}', word: this.value, imageUrl: '${info.imageUrl || ''}' }; renderWorksheet();"
                             class="flex-1 px-2 py-1 border border-stone-300 rounded text-xs bg-white">
@@ -778,7 +814,6 @@
 
         function createGridCellSVG(char, gridStyle, theme, traceOpacity = 0, isBigSample = false) {
             const cell = document.createElement('div');
-            // Unified Grid Box Dimensions (w-16 h-16)
             cell.className = `relative rounded flex-shrink-0 flex items-center justify-center bg-white overflow-hidden w-16 h-16`;
             cell.style.borderColor = theme.gridBorder;
 
@@ -790,7 +825,6 @@
                 const opacity = isBigSample ? '1.0' : traceOpacity.toString();
                 const fill = isBigSample ? '#1c1917' : '#292524';
                 
-                // SVG Vector Text with precise middle baseline alignment
                 textSVG = `
                     <text x="50" y="52" 
                           text-anchor="middle" 
@@ -833,6 +867,9 @@
 
             const baseTheme = THEMES[themeKey] || THEMES.green;
 
+            // Render School Logo
+            renderSchoolLogoHTML();
+
             // Update Sheet Header Text
             document.getElementById('headerSubtitle').className = `text-2xl font-bold tracking-widest font-kaiti mb-1 ${baseTheme.titleColor}`;
             document.getElementById('headerSubtitle').innerText = subtitle;
@@ -841,7 +878,8 @@
             document.getElementById('displayDate').innerText = dateStr || '____/____/____';
 
             // Toggle Decorations
-            document.getElementById('decorLeft').style.display = showDecorations ? 'block' : 'none';
+            const showSchoolLogo = document.getElementById('showSchoolLogo').checked;
+            document.getElementById('decorLeft').style.display = (showDecorations && !showSchoolLogo) ? 'block' : 'none';
             document.getElementById('decorRight').style.display = showDecorations ? 'block' : 'none';
 
             // Character count tag
@@ -861,7 +899,6 @@
                 const pronText = getPronunciation(char, pinyinMode, i);
                 const illustInfo = getIllustrationInfo(char, i);
 
-                // Pick theme: Kids mode cycles vibrant pastel themes per character
                 const theme = (styleMode === 'kids') 
                     ? KIDS_THEMES_PALETTE[i % KIDS_THEMES_PALETTE.length] 
                     : baseTheme;
@@ -870,7 +907,7 @@
                 blockEl.className = `border rounded-xl p-3 relative transition ${theme.cardBg}`;
                 blockEl.style.borderColor = theme.gridBorder;
 
-                // 1. Pronunciation & Char Header
+                // Pronunciation & Char Header
                 let headerHTML = `
                     <div class="flex items-center gap-3 mb-2 pb-1.5 border-b border-stone-200/60">
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded ${theme.accentBadge}">字 ${i + 1}</span>
@@ -883,7 +920,7 @@
 
                 blockEl.innerHTML = headerHTML;
 
-                // 2. Stroke Order Breakdown Row
+                // Stroke Order Breakdown Row
                 if (showBreakdown) {
                     const breakdownWrapper = document.createElement('div');
                     breakdownWrapper.className = 'mb-2.5 pb-2 border-b border-dashed';
@@ -911,20 +948,17 @@
                     blockEl.appendChild(breakdownWrapper);
                 }
 
-                // 3. Grid Row Layout (Scaled & Proportionate)
+                // Grid Row Layout
                 const contentRow = document.createElement('div');
                 contentRow.className = 'flex items-stretch gap-3 overflow-x-auto';
 
-                // Left side big sample cell & optional Illustration box
                 if (showBigSample) {
                     const bigCellWrapper = document.createElement('div');
                     bigCellWrapper.className = 'flex-shrink-0 flex items-center gap-2';
 
-                    // Big Sample Cell
                     const bigCell = createGridCellSVG(char, gridStyle, theme, 1.0, true);
                     bigCellWrapper.appendChild(bigCell);
 
-                    // Illustration Box (If enabled or in Kids Mode)
                     if (showIllustration) {
                         const illustBox = document.createElement('div');
                         illustBox.className = 'w-16 h-16 rounded border bg-white flex flex-col items-center justify-center p-1 relative shadow-xs overflow-hidden';
@@ -947,15 +981,14 @@
                     contentRow.appendChild(bigCellWrapper);
                 }
 
-                // Right side practice grid rows
+                // Practice Grid Rows
                 const gridRowsContainer = document.createElement('div');
                 gridRowsContainer.className = 'flex-1 flex flex-col justify-start space-y-2';
 
-                // Calculate practice grid columns
                 let totalTraceCols = colsPerRow;
                 if (showBigSample) totalTraceCols -= 1;
                 if (showBigSample && showIllustration) totalTraceCols -= 1;
-                if (totalTraceCols < 3) totalTraceCols = 3; // Ensure minimum practice space
+                if (totalTraceCols < 3) totalTraceCols = 3;
 
                 for (let r = 0; r < tracingRows; r++) {
                     const rowEl = document.createElement('div');
@@ -1099,3 +1132,4 @@
     </script>
 </body>
 </html>
+```
