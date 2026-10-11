@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>繁體中文筆順字帖生成器</title>
+    <title>繁體中文姓名筆順字帖生成器</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- HanziWriter for Chinese stroke order vectors & animation -->
@@ -54,12 +54,13 @@
     </script>
 
     <style>
-        /* Printable Page Constraints */
         @media print {
             body {
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .no-print {
                 display: none !important;
@@ -70,7 +71,7 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 border: none !important;
-                padding: 8mm !important;
+                padding: 6mm 8mm !important;
             }
             @page {
                 size: A4 portrait;
@@ -86,6 +87,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
             margin: 0 auto;
             position: relative;
+            box-sizing: border-box;
         }
 
         /* Custom subtle scrollbar */
@@ -110,7 +112,7 @@
                 </div>
                 <div>
                     <h1 class="text-base font-bold font-serif text-stone-800 tracking-wide flex items-center gap-2">
-                        繁體中文筆順字帖生成器
+                        繁體中文姓名筆順字帖生成器
                         <span class="text-[10px] bg-stone-200 text-stone-700 font-sans font-normal px-2 py-0.5 rounded">標準楷體</span>
                     </h1>
                     <p class="text-xs text-stone-500 font-serif">一筆一劃引導學習 ‧ 自動拆解筆順練習帖</p>
@@ -151,7 +153,7 @@
                     <input type="text" id="inputName" value="王詩涵" placeholder="請輸入姓名 (如：王詩涵)" 
                         oninput="renderWorksheet()"
                         class="w-full text-lg font-serif font-bold px-3.5 py-2 border border-stone-300 rounded-lg focus:border-sage-600 focus:ring-1 focus:ring-sage-600 focus:outline-none transition tracking-widest text-center bg-white">
-                    <div class="flex gap-2 mt-2 items-center">
+                    <div class="flex gap-2 mt-2 items-center flex-wrap">
                         <span class="text-[11px] text-stone-400">範例：</span>
                         <button onclick="setSampleName('王詩涵')" class="text-xs text-sage-600 hover:underline">王詩涵</button>
                         <button onclick="setSampleName('陳樂軒')" class="text-xs text-sage-600 hover:underline">陳樂軒</button>
@@ -179,12 +181,21 @@
                 </div>
             </div>
 
-            <!-- Card 2: Layout Options -->
+            <!-- Card 2: Layout Options & Style Switcher -->
             <div class="bg-[#F9F8F6] p-5 rounded-xl border border-stone-200 shadow-sm space-y-4">
                 <div class="flex items-center justify-between border-b border-stone-200 pb-2.5">
                     <h2 class="text-xs font-bold font-serif text-stone-700 tracking-wider uppercase flex items-center gap-2">
                         <i class="fa-solid fa-sliders text-sage-600"></i> 字帖格式自訂
                     </h2>
+                </div>
+
+                <!-- Template Style Toggle (Classic vs Kids Colorful) -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">字帖風格模式</label>
+                    <select id="styleMode" onchange="renderWorksheet()" class="w-full text-xs px-3 py-2 border border-amber-300 bg-amber-50 rounded-lg font-bold text-amber-900 focus:outline-none focus:border-amber-600">
+                        <option value="classic">典雅古樸版 (單色沉穩)</option>
+                        <option value="kids" selected>🎈 兒童繽紛插畫版 (彩色卡片 + 卡通圖示)</option>
+                    </select>
                 </div>
 
                 <!-- Phonetics Mode -->
@@ -210,7 +221,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">字帖色彩</label>
+                        <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">主色調 (典雅版)</label>
                         <select id="colorTheme" onchange="renderWorksheet()" class="w-full text-xs px-2.5 py-2 border border-stone-300 rounded-lg bg-white">
                             <option value="green" selected>翡翠綠 (標準)</option>
                             <option value="red">硃砂紅 (傳統)</option>
@@ -230,6 +241,11 @@
                     <label class="flex items-center justify-between cursor-pointer group">
                         <span class="text-stone-700 font-medium group-hover:text-stone-900">超大例字標示</span>
                         <input type="checkbox" id="showBigSample" checked onchange="renderWorksheet()" class="w-4 h-4 text-sage-600 rounded border-stone-300 focus:ring-sage-600">
+                    </label>
+
+                    <label class="flex items-center justify-between cursor-pointer group">
+                        <span class="text-stone-700 font-medium group-hover:text-stone-900">例字旁顯示插圖與組詞</span>
+                        <input type="checkbox" id="showIllustration" checked onchange="renderWorksheet()" class="w-4 h-4 text-sage-600 rounded border-stone-300 focus:ring-sage-600">
                     </label>
 
                     <label class="flex items-center justify-between cursor-pointer group">
@@ -270,7 +286,21 @@
                 </div>
             </div>
 
-            <!-- Card 3: Custom Pronunciation Overrides -->
+            <!-- Card 3: Custom Illustrations & Vocabulary Settings -->
+            <div class="bg-[#F9F8F6] p-5 rounded-xl border border-stone-200 shadow-sm space-y-3">
+                <div class="flex items-center justify-between border-b border-stone-200 pb-2">
+                    <h2 class="text-xs font-bold font-serif text-stone-700 tracking-wider uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-image text-amber-600"></i> 個別字插圖與組詞設定
+                    </h2>
+                    <span class="text-[10px] text-amber-700 font-semibold bg-amber-100 px-2 py-0.5 rounded">可上傳圖片</span>
+                </div>
+                <p class="text-[11px] text-stone-500 font-serif">您可以為每個字選擇圖示、輸入自訂組詞，或點擊相機圖示**上傳您自己的圖片**！</p>
+                <div id="illustrationEditors" class="space-y-3 pt-1">
+                    <!-- Dynamic Illustration & Custom Image Editors injected here -->
+                </div>
+            </div>
+
+            <!-- Card 4: Custom Pronunciation Overrides -->
             <div class="bg-[#F9F8F6] p-5 rounded-xl border border-stone-200 shadow-sm space-y-3">
                 <div class="flex items-center justify-between border-b border-stone-200 pb-2">
                     <h2 class="text-xs font-bold font-serif text-stone-700 tracking-wider uppercase flex items-center gap-2">
@@ -325,19 +355,19 @@
                     <div class="mt-5 flex flex-wrap justify-between items-center text-xs font-serif text-stone-700 px-2 gap-y-2">
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">姓名：</span>
-                            <div class="border-b border-stone-400 px-3 text-center min-w-[100px] h-6 flex items-center justify-center font-bold text-stone-900 font-kaiti">
+                            <div class="border-b border-stone-400 px-3 min-w-[100px] h-6 flex items-center justify-center font-bold text-stone-900 font-kaiti">
                                 <span id="displayName">王詩涵</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">班別：</span>
-                            <div class="border-b border-stone-400 px-3 text-center min-w-[90px] h-6 flex items-center justify-center font-kaiti">
+                            <div class="border-b border-stone-400 px-3 min-w-[90px] h-6 flex items-center justify-center font-kaiti">
                                 <span id="displayClass">K3A 大班</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">日期：</span>
-                            <div class="border-b border-stone-400 px-3 text-center min-w-[110px] h-6 flex items-center justify-center font-kaiti">
+                            <div class="border-b border-stone-400 px-3 min-w-[110px] h-6 flex items-center justify-center font-kaiti">
                                 <span id="displayDate">____/____/____</span>
                             </div>
                         </div>
@@ -345,7 +375,7 @@
                 </div>
 
                 <!-- Dynamic Character Blocks Container -->
-                <div id="characterBlocksContainer" class="space-y-5">
+                <div id="characterBlocksContainer" class="space-y-4">
                     <!-- Dynamic character practice sections injected here -->
                 </div>
 
@@ -406,7 +436,9 @@
                 gridBorder: '#3E5C4A',
                 gridDash: '#A3B899',
                 strokeColor: '#334C3D',
-                activeStrokeColor: '#D97706'
+                activeStrokeColor: '#D97706',
+                cardBg: 'bg-white',
+                headerBg: 'bg-sage-50/50'
             },
             red: {
                 titleColor: 'text-rose-900',
@@ -414,7 +446,9 @@
                 gridBorder: '#9F1239',
                 gridDash: '#F43F5E',
                 strokeColor: '#881337',
-                activeStrokeColor: '#D97706'
+                activeStrokeColor: '#D97706',
+                cardBg: 'bg-white',
+                headerBg: 'bg-rose-50/50'
             },
             blue: {
                 titleColor: 'text-sky-900',
@@ -422,7 +456,9 @@
                 gridBorder: '#0369A1',
                 gridDash: '#38BDF8',
                 strokeColor: '#0C4A6E',
-                activeStrokeColor: '#D97706'
+                activeStrokeColor: '#D97706',
+                cardBg: 'bg-white',
+                headerBg: 'bg-sky-50/50'
             },
             black: {
                 titleColor: 'text-stone-900',
@@ -430,9 +466,35 @@
                 gridBorder: '#27272A',
                 gridDash: '#71717A',
                 strokeColor: '#18181B',
-                activeStrokeColor: '#D97706'
+                activeStrokeColor: '#D97706',
+                cardBg: 'bg-white',
+                headerBg: 'bg-stone-100/50'
             }
         };
+
+        // Colorful themes cycle for Kids Illustrated Mode
+        const KIDS_THEMES_PALETTE = [
+            {
+                gridBorder: '#0284C7', gridDash: '#7DD3FC', strokeColor: '#0369A1', activeStrokeColor: '#EA580C',
+                cardBg: 'bg-sky-50/40', accentBadge: 'bg-sky-100 text-sky-800 border border-sky-300'
+            },
+            {
+                gridBorder: '#16A34A', gridDash: '#86EFAC', strokeColor: '#15803D', activeStrokeColor: '#EAB308',
+                cardBg: 'bg-emerald-50/40', accentBadge: 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+            },
+            {
+                gridBorder: '#D97706', gridDash: '#FDE68A', strokeColor: '#B45309', activeStrokeColor: '#2563EB',
+                cardBg: 'bg-amber-50/40', accentBadge: 'bg-amber-100 text-amber-800 border border-amber-300'
+            },
+            {
+                gridBorder: '#9333EA', gridDash: '#E9D5FF', strokeColor: '#7E22CE', activeStrokeColor: '#D97706',
+                cardBg: 'bg-purple-50/40', accentBadge: 'bg-purple-100 text-purple-800 border border-purple-300'
+            },
+            {
+                gridBorder: '#E11D48', gridDash: '#FECDD3', strokeColor: '#BE123C', activeStrokeColor: '#0284C7',
+                cardBg: 'bg-rose-50/40', accentBadge: 'bg-rose-100 text-rose-800 border border-rose-300'
+            }
+        ];
 
         // 2. Comprehensive Pronunciation Dictionary
         const DICT = {
@@ -464,7 +526,41 @@
             '賴': { jyutping: 'laai6', pinyin: 'lài', zhuyin: 'ㄌㄞˋ' }
         };
 
+        // Default Character Illustrations and Associated Words
+        const DEFAULT_ILLUSTRATIONS = {
+            '王': { emoji: '👑', word: '國王' },
+            '詩': { emoji: '📜', word: '詩歌' },
+            '涵': { emoji: '💧', word: '涵養' },
+            '陳': { emoji: '🏰', word: '陳設' },
+            '樂': { emoji: '🎵', word: '快樂' },
+            '軒': { emoji: '🚗', word: '軒昂' },
+            '張': { emoji: '🏹', word: '開張' },
+            '梓': { emoji: '🌳', word: '梓木' },
+            '童': { emoji: '👶', word: '童年' },
+            '李': { emoji: '🍎', word: '李子' },
+            '嘉': { emoji: '🌟', word: '嘉許' },
+            '欣': { emoji: '😊', word: '欣喜' },
+            '黃': { emoji: '🌻', word: '黃金' },
+            '林': { emoji: '🌲', word: '森林' },
+            '劉': { emoji: '⚔️', word: '刀劉' },
+            '吳': { emoji: '🗣️', word: '吳語' },
+            '蔡': { emoji: '🌱', word: '蔡草' },
+            '楊': { emoji: '🍃', word: '楊柳' },
+            '許': { emoji: '💬', word: '許願' },
+            '鄭': { emoji: '🚩', word: '鄭重' },
+            '謝': { emoji: '🙏', word: '謝謝' },
+            '郭': { emoji: '🏯', word: '城郭' },
+            '曾': { emoji: '⏳', word: '曾經' },
+            '邱': { emoji: '⛰️', word: '山邱' },
+            '廖': { emoji: '🎨', word: '廖寥' },
+            '賴': { emoji: '🤝', word: '信賴' }
+        };
+
+        // Preset Quick Emoji Options for Picker
+        const PRESET_EMOJIS = ['👑', '🌸', '☀️', '⭐', '🍎', '🌳', '🚗', '🐱', '🐶', '🎈', '📚', '🎵', '🎨', '⚽', '🍦', '🚀', '🏰', '🦁', '🌈', '💡'];
+
         const customPronunciations = {};
+        const customIllustrations = {}; // Holds user customized emoji/image upload per character
         const strokeDataCache = {};
         let currentAnimWriter = null;
         let activeAnimChar = '';
@@ -482,6 +578,96 @@
                 return DICT[char][mode];
             }
             return mode === 'none' ? '' : char;
+        }
+
+        function getIllustrationInfo(char, index) {
+            if (customIllustrations[index]) {
+                return customIllustrations[index];
+            }
+            if (DEFAULT_ILLUSTRATIONS[char]) {
+                return { type: 'emoji', emoji: DEFAULT_ILLUSTRATIONS[char].emoji, word: DEFAULT_ILLUSTRATIONS[char].word, imageUrl: '' };
+            }
+            return { type: 'emoji', emoji: '🌟', word: `${char}字`, imageUrl: '' };
+        }
+
+        function handleImageUpload(index, event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const char = Array.from(document.getElementById('inputName').value.trim())[index] || '字';
+                const currentInfo = getIllustrationInfo(char, index);
+
+                customIllustrations[index] = {
+                    type: 'image',
+                    emoji: currentInfo.emoji,
+                    word: currentInfo.word,
+                    imageUrl: dataUrl
+                };
+                renderWorksheet();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetIllustration(index) {
+            delete customIllustrations[index];
+            renderWorksheet();
+        }
+
+        function updateIllustrationEditors(characters) {
+            const container = document.getElementById('illustrationEditors');
+            container.innerHTML = '';
+
+            characters.forEach((char, idx) => {
+                const info = getIllustrationInfo(char, idx);
+                const card = document.createElement('div');
+                card.className = 'p-2.5 bg-white border border-stone-200 rounded-lg space-y-2 text-xs shadow-sm';
+
+                let imagePreviewHTML = '';
+                if (info.type === 'image' && info.imageUrl) {
+                    imagePreviewHTML = `<div class="w-8 h-8 rounded border overflow-hidden flex-shrink-0 bg-stone-50"><img src="${info.imageUrl}" class="w-full h-full object-contain"/></div>`;
+                } else {
+                    imagePreviewHTML = `<div class="w-8 h-8 rounded border flex items-center justify-center text-lg bg-amber-50 flex-shrink-0">${info.emoji}</div>`;
+                }
+
+                let presetButtonsHTML = PRESET_EMOJIS.slice(0, 8).map(e => `
+                    <button onclick="customIllustrations[${idx}] = { type: 'emoji', emoji: '${e}', word: '${info.word}', imageUrl: '' }; renderWorksheet();" 
+                        class="hover:bg-stone-100 p-0.5 rounded text-xs">${e}</button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-serif font-bold text-stone-800 text-xs">字 ${idx + 1} (${char}) 插圖圖示：</span>
+                        ${customIllustrations[idx] ? `<button onclick="resetIllustration(${idx})" class="text-[10px] text-amber-700 hover:underline">恢復預設</button>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${imagePreviewHTML}
+                        
+                        <!-- File Upload Button -->
+                        <label class="cursor-pointer bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 px-2.5 py-1 rounded text-[11px] font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-camera text-amber-600"></i> 上傳圖片
+                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(${idx}, event)">
+                        </label>
+
+                        <!-- Custom Emoji Input -->
+                        <input type="text" value="${info.emoji}" placeholder="圖示"
+                            oninput="customIllustrations[${idx}] = { type: 'emoji', emoji: this.value || '🌟', word: '${info.word}', imageUrl: '' }; renderWorksheet();"
+                            class="w-10 text-center px-1 py-1 border border-stone-300 rounded text-xs bg-white">
+                        
+                        <!-- Word Text Input -->
+                        <input type="text" value="${info.word}" placeholder="搭配詞語"
+                            oninput="customIllustrations[${idx}] = { type: info.type || 'emoji', emoji: '${info.emoji}', word: this.value, imageUrl: '${info.imageUrl || ''}' }; renderWorksheet();"
+                            class="flex-1 px-2 py-1 border border-stone-300 rounded text-xs bg-white">
+                    </div>
+                    <div class="flex items-center gap-1 pt-1 border-t border-stone-100 text-[10px] text-stone-400">
+                        <span>快速點選：</span>
+                        <div class="flex gap-1 overflow-x-auto">${presetButtonsHTML}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         function updatePronunciationEditors(characters, pinyinMode) {
@@ -566,7 +752,7 @@
 
         function createStepStrokeSVG(strokes, currentStep, gridStyle, theme) {
             const container = document.createElement('div');
-            container.className = 'w-8 h-8 rounded border flex-shrink-0 relative overflow-hidden bg-white';
+            container.className = 'w-8 h-8 rounded border flex-shrink-0 relative overflow-hidden bg-white shadow-xs';
             container.style.borderColor = theme.gridBorder;
 
             const gridLines = getGridLinesSVG(100, 100, gridStyle, theme);
@@ -590,16 +776,17 @@
             return container;
         }
 
-        function createGridCellSVG(char, gridStyle, theme, traceOpacity = 0, isBigSample = false, customClass = 'w-14 h-14') {
+        function createGridCellSVG(char, gridStyle, theme, traceOpacity = 0, isBigSample = false) {
             const cell = document.createElement('div');
-            cell.className = `relative rounded flex-shrink-0 flex items-center justify-center bg-white overflow-hidden ${customClass}`;
+            // Unified Grid Box Dimensions (w-16 h-16)
+            cell.className = `relative rounded flex-shrink-0 flex items-center justify-center bg-white overflow-hidden w-16 h-16`;
             cell.style.borderColor = theme.gridBorder;
 
             const gridLines = getGridLinesSVG(100, 100, gridStyle, theme);
 
             let textSVG = '';
             if (char && (isBigSample || traceOpacity > 0)) {
-                const fontSize = isBigSample ? '62' : '52';
+                const fontSize = '60';
                 const opacity = isBigSample ? '1.0' : traceOpacity.toString();
                 const fill = isBigSample ? '#1c1917' : '#292524';
                 
@@ -632,20 +819,22 @@
             const studentClass = document.getElementById('inputClass').value.trim();
             const dateStr = document.getElementById('inputDate').value.trim();
 
+            const styleMode = document.getElementById('styleMode').value;
             const pinyinMode = document.getElementById('pinyinMode').value;
             const gridStyle = document.getElementById('gridStyle').value;
             const themeKey = document.getElementById('colorTheme').value;
             const showBreakdown = document.getElementById('showStrokeBreakdown').checked;
             const showBigSample = document.getElementById('showBigSample').checked;
+            const showIllustration = document.getElementById('showIllustration').checked;
             const showDecorations = document.getElementById('showDecorations').checked;
             const tracingRows = parseInt(document.getElementById('tracingRows').value, 10);
             const colsPerRow = parseInt(document.getElementById('colsPerRow').value, 10);
             const traceOpacity = parseFloat(document.getElementById('traceOpacity').value) / 100;
 
-            const theme = THEMES[themeKey] || THEMES.green;
+            const baseTheme = THEMES[themeKey] || THEMES.green;
 
             // Update Sheet Header Text
-            document.getElementById('headerSubtitle').className = `text-2xl font-bold tracking-widest font-kaiti mb-1 ${theme.titleColor}`;
+            document.getElementById('headerSubtitle').className = `text-2xl font-bold tracking-widest font-kaiti mb-1 ${baseTheme.titleColor}`;
             document.getElementById('headerSubtitle').innerText = subtitle;
             document.getElementById('displayName').innerText = name;
             document.getElementById('displayClass').innerText = studentClass || '____';
@@ -659,8 +848,9 @@
             const characters = Array.from(name).filter(c => c.trim().length > 0);
             document.getElementById('charCountTag').innerText = `${characters.length} 個字`;
 
-            // Pronunciation Input Editors
+            // Update side panel editors
             updatePronunciationEditors(characters, pinyinMode);
+            updateIllustrationEditors(characters);
 
             // Container for worksheet blocks
             const container = document.getElementById('characterBlocksContainer');
@@ -669,16 +859,22 @@
             for (let i = 0; i < characters.length; i++) {
                 const char = characters[i];
                 const pronText = getPronunciation(char, pinyinMode, i);
+                const illustInfo = getIllustrationInfo(char, i);
+
+                // Pick theme: Kids mode cycles vibrant pastel themes per character
+                const theme = (styleMode === 'kids') 
+                    ? KIDS_THEMES_PALETTE[i % KIDS_THEMES_PALETTE.length] 
+                    : baseTheme;
 
                 const blockEl = document.createElement('div');
-                blockEl.className = 'border rounded-lg p-3.5 relative bg-white transition';
+                blockEl.className = `border rounded-xl p-3 relative transition ${theme.cardBg}`;
                 blockEl.style.borderColor = theme.gridBorder;
 
                 // 1. Pronunciation & Char Header
                 let headerHTML = `
-                    <div class="flex items-center gap-3 mb-2.5">
+                    <div class="flex items-center gap-3 mb-2 pb-1.5 border-b border-stone-200/60">
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded ${theme.accentBadge}">字 ${i + 1}</span>
-                        ${pinyinMode !== 'none' ? `<span class="text-xs font-semibold text-stone-700 tracking-wider font-mono">${pronText}</span>` : ''}
+                        ${pinyinMode !== 'none' ? `<span class="text-xs font-semibold text-stone-700 tracking-wider font-mono bg-white px-2 py-0.5 rounded border border-stone-200">${pronText}</span>` : ''}
                         <button onclick="openAnimForChar('${char}')" class="no-print text-[11px] text-amber-700 hover:text-amber-800 font-medium ml-auto flex items-center gap-1">
                             <i class="fa-solid fa-play-circle text-xs"></i> 播放動畫
                         </button>
@@ -690,16 +886,16 @@
                 // 2. Stroke Order Breakdown Row
                 if (showBreakdown) {
                     const breakdownWrapper = document.createElement('div');
-                    breakdownWrapper.className = 'mb-3 pb-2.5 border-b border-dashed';
+                    breakdownWrapper.className = 'mb-2.5 pb-2 border-b border-dashed';
                     breakdownWrapper.style.borderColor = theme.gridDash;
 
                     const breakdownTitle = document.createElement('div');
-                    breakdownTitle.className = 'text-[10px] font-semibold text-stone-500 mb-1.5 flex items-center gap-1 font-serif';
+                    breakdownTitle.className = 'text-[10px] font-semibold text-stone-500 mb-1 flex items-center gap-1 font-serif';
                     breakdownTitle.innerHTML = `<i class="fa-solid fa-list-ol text-stone-400"></i> 全字筆順拆解步驟：`;
                     breakdownWrapper.appendChild(breakdownTitle);
 
                     const strokesContainer = document.createElement('div');
-                    strokesContainer.className = 'flex flex-wrap gap-1.5 items-center';
+                    strokesContainer.className = 'flex flex-wrap gap-1 items-center';
                     
                     const strokeData = await fetchCharStrokeData(char);
                     if (strokeData && strokeData.strokes && strokeData.strokes.length > 0) {
@@ -719,30 +915,47 @@
                 const contentRow = document.createElement('div');
                 contentRow.className = 'flex items-stretch gap-3 overflow-x-auto';
 
-                // Single grid size standard
-                const uniformCellClass = 'w-14 h-14';
-
-                // Left side big sample cell
+                // Left side big sample cell & optional Illustration box
                 if (showBigSample) {
                     const bigCellWrapper = document.createElement('div');
-                    
-                    // Match height dynamically if tracingRows > 1
-                    let bigCellDimensionClass = uniformCellClass;
-                    if (tracingRows === 2) bigCellDimensionClass = 'w-[120px] h-[120px]';
-                    else if (tracingRows === 3) bigCellDimensionClass = 'w-[180px] h-[180px]';
-                    else if (tracingRows === 4) bigCellDimensionClass = 'w-[240px] h-[240px]';
+                    bigCellWrapper.className = 'flex-shrink-0 flex items-center gap-2';
 
-                    bigCellWrapper.className = 'flex-shrink-0 flex items-center justify-center';
-                    const bigCell = createGridCellSVG(char, gridStyle, theme, 1.0, true, bigCellDimensionClass);
+                    // Big Sample Cell
+                    const bigCell = createGridCellSVG(char, gridStyle, theme, 1.0, true);
                     bigCellWrapper.appendChild(bigCell);
+
+                    // Illustration Box (If enabled or in Kids Mode)
+                    if (showIllustration) {
+                        const illustBox = document.createElement('div');
+                        illustBox.className = 'w-16 h-16 rounded border bg-white flex flex-col items-center justify-center p-1 relative shadow-xs overflow-hidden';
+                        illustBox.style.borderColor = theme.gridBorder;
+
+                        let imgOrEmojiHTML = '';
+                        if (illustInfo.type === 'image' && illustInfo.imageUrl) {
+                            imgOrEmojiHTML = `<img src="${illustInfo.imageUrl}" class="w-9 h-9 object-contain" />`;
+                        } else {
+                            imgOrEmojiHTML = `<span class="text-2xl leading-none">${illustInfo.emoji}</span>`;
+                        }
+
+                        illustBox.innerHTML = `
+                            ${imgOrEmojiHTML}
+                            <span class="text-[9px] font-serif font-bold text-stone-700 mt-0.5 tracking-tighter truncate max-w-full">${illustInfo.word}</span>
+                        `;
+                        bigCellWrapper.appendChild(illustBox);
+                    }
+
                     contentRow.appendChild(bigCellWrapper);
                 }
 
                 // Right side practice grid rows
                 const gridRowsContainer = document.createElement('div');
-                gridRowsContainer.className = 'flex-1 flex flex-col justify-between space-y-2';
+                gridRowsContainer.className = 'flex-1 flex flex-col justify-start space-y-2';
 
-                const totalTraceCols = showBigSample ? colsPerRow - 1 : colsPerRow;
+                // Calculate practice grid columns
+                let totalTraceCols = colsPerRow;
+                if (showBigSample) totalTraceCols -= 1;
+                if (showBigSample && showIllustration) totalTraceCols -= 1;
+                if (totalTraceCols < 3) totalTraceCols = 3; // Ensure minimum practice space
 
                 for (let r = 0; r < tracingRows; r++) {
                     const rowEl = document.createElement('div');
@@ -751,7 +964,7 @@
                     for (let c = 0; c < totalTraceCols; c++) {
                         const isTrace = c < Math.ceil(totalTraceCols * 0.6);
                         const cellOpacity = isTrace ? traceOpacity : 0;
-                        const cell = createGridCellSVG(char, gridStyle, theme, cellOpacity, false, uniformCellClass);
+                        const cell = createGridCellSVG(char, gridStyle, theme, cellOpacity, false);
                         rowEl.appendChild(cell);
                     }
 
