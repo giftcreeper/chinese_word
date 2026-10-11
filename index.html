@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>繁體中文姓名筆順字帖生成器</title>
+    <title>繁體中文筆順字帖生成器</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- HanziWriter for Chinese stroke order vectors & animation -->
@@ -112,7 +112,7 @@
                 </div>
                 <div>
                     <h1 class="text-base font-bold font-serif text-stone-800 tracking-wide flex items-center gap-2">
-                        繁體中文姓名筆順字帖生成器
+                        繁體中文筆順字帖生成器
                         <span class="text-[10px] bg-stone-200 text-stone-700 font-sans font-normal px-2 py-0.5 rounded">標準楷體</span>
                     </h1>
                     <p class="text-xs text-stone-500 font-serif">一筆一劃引導學習 ‧ 自動拆解筆順練習帖</p>
@@ -144,7 +144,7 @@
             <div class="bg-[#F9F8F6] p-5 rounded-xl border border-stone-200 shadow-sm space-y-4">
                 <div class="flex items-center justify-between border-b border-stone-200 pb-2.5">
                     <h2 class="text-xs font-bold font-serif text-stone-700 tracking-wider uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-pen-nib text-sage-600"></i> 姓名與標題設定
+                        <i class="fa-solid fa-pen-nib text-sage-600"></i> 文字與標題設定
                     </h2>
                 </div>
 
@@ -167,22 +167,15 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">繁體中文姓名</label>
-                    <input type="text" id="inputName" value="王詩涵" placeholder="請輸入姓名 (如：王詩涵)" 
+                    <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">文字顯示</label>
+                    <input type="text" id="inputName" value="人口大" placeholder="請輸入文字" 
                         oninput="renderWorksheet()"
                         class="w-full text-lg font-serif font-bold px-3.5 py-2 border border-stone-300 rounded-lg focus:border-sage-600 focus:ring-1 focus:ring-sage-600 focus:outline-none transition tracking-widest text-center bg-white">
-                    <div class="flex gap-2 mt-2 items-center flex-wrap">
-                        <span class="text-[11px] text-stone-400">範例：</span>
-                        <button onclick="setSampleName('王詩涵')" class="text-xs text-sage-600 hover:underline">王詩涵</button>
-                        <button onclick="setSampleName('陳樂軒')" class="text-xs text-sage-600 hover:underline">陳樂軒</button>
-                        <button onclick="setSampleName('張梓童')" class="text-xs text-sage-600 hover:underline">張梓童</button>
-                        <button onclick="setSampleName('李嘉欣')" class="text-xs text-sage-600 hover:underline">李嘉欣</button>
-                    </div>
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">字帖頁頭標題</label>
-                    <input type="text" id="inputSubtitle" value="全名筆順寫字帖" placeholder="字帖標題" 
+                    <input type="text" id="inputSubtitle" value="寫字練習帖" placeholder="字帖標題" 
                         oninput="renderWorksheet()"
                         class="w-full text-xs px-3 py-2 border border-stone-300 rounded-lg focus:border-sage-600 focus:outline-none bg-white">
                 </div>
@@ -190,7 +183,7 @@
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">學生班別</label>
-                        <input type="text" id="inputClass" value="K3A 大班" oninput="renderWorksheet()" class="w-full text-xs px-3 py-2 border border-stone-300 rounded-lg bg-white">
+                        <input type="text" id="inputClass" value="K3A" oninput="renderWorksheet()" class="w-full text-xs px-3 py-2 border border-stone-300 rounded-lg bg-white">
                     </div>
                     <div>
                         <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">日期</label>
@@ -211,8 +204,8 @@
                 <div>
                     <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">字帖風格模式</label>
                     <select id="styleMode" onchange="renderWorksheet()" class="w-full text-xs px-3 py-2 border border-amber-300 bg-amber-50 rounded-lg font-bold text-amber-900 focus:outline-none focus:border-amber-600">
-                        <option value="classic">典雅古樸版 (單色沉穩)</option>
-                        <option value="kids" selected>🎈 兒童繽紛插畫版 (彩色卡片 + 卡通圖示)</option>
+                        <option value="classic">典雅古樸版</option>
+                        <option value="kids" selected>兒童繽紛版</option>
                     </select>
                 </div>
 
@@ -220,10 +213,10 @@
                 <div>
                     <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">讀音標註</label>
                     <select id="pinyinMode" onchange="renderWorksheet()" class="w-full text-xs px-3 py-2 border border-stone-300 rounded-lg bg-white focus:outline-none focus:border-sage-600">
+                        <option value="none">不顯示讀音</option>
                         <option value="jyutping" selected>粵語拼音 (wong4, si1, ham4)</option>
                         <option value="pinyin">漢語拼音 (wáng, shī, hán)</option>
                         <option value="zhuyin">注音符號 (ㄨㄤˊ, ㄕ, ㄏㄢˊ)</option>
-                        <option value="none">不顯示讀音</option>
                     </select>
                 </div>
 
@@ -239,12 +232,12 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">主色調 (典雅版)</label>
+                        <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1.5">主色調</label>
                         <select id="colorTheme" onchange="renderWorksheet()" class="w-full text-xs px-2.5 py-2 border border-stone-300 rounded-lg bg-white">
-                            <option value="green" selected>翡翠綠 (標準)</option>
-                            <option value="red">硃砂紅 (傳統)</option>
-                            <option value="blue">晴空藍 (雅緻)</option>
-                            <option value="black">水墨黑 (簡約)</option>
+                            <option value="green" selected>綠 (標準)</option>
+                            <option value="red">紅</option>
+                            <option value="blue">藍</option>
+                            <option value="black">黑</option>
                         </select>
                     </div>
                 </div>
@@ -297,7 +290,7 @@
                 <!-- Trace Opacity Slider -->
                 <div class="pt-1">
                     <div class="flex justify-between text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1">
-                        <span>描紅深淺濃度</span>
+                        <span>筆順深淺濃度</span>
                         <span id="opacityVal" class="text-stone-700 font-mono">22%</span>
                     </div>
                     <input type="range" id="traceOpacity" min="10" max="50" value="22" oninput="document.getElementById('opacityVal').innerText = this.value + '%'; renderWorksheet();" class="w-full accent-sage-600">
@@ -308,13 +301,13 @@
             <div class="bg-[#F9F8F6] p-5 rounded-xl border border-stone-200 shadow-sm space-y-3">
                 <div class="flex items-center justify-between border-b border-stone-200 pb-2">
                     <h2 class="text-xs font-bold font-serif text-stone-700 tracking-wider uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-image text-amber-600"></i> 個別字插圖與組詞設定
+                        <i class="fa-solid fa-face-smile text-amber-600"></i> Emoji 插圖與組詞
                     </h2>
-                    <span class="text-[10px] text-amber-700 font-semibold bg-amber-100 px-2 py-0.5 rounded">可上傳圖片</span>
+                    <span class="text-[10px] text-amber-800 font-semibold bg-amber-100 px-2 py-0.5 rounded">Emoji 圖示</span>
                 </div>
-                <p class="text-[11px] text-stone-500 font-serif">您可以為每個字選擇圖示、輸入自訂組詞，或點擊相機圖示上傳圖片！</p>
+                <p class="text-[11px] text-stone-500 font-serif">您可以直接打入 Emoji 輸入框，或點選快捷按鈕切換每個字的插圖，並修改自訂組詞！</p>
                 <div id="illustrationEditors" class="space-y-3 pt-1">
-                    <!-- Dynamic Illustration Editors injected here -->
+                    <!-- Dynamic Emoji & Word Editors injected here -->
                 </div>
             </div>
 
@@ -369,30 +362,27 @@
                     </div>
 
                     <h1 id="headerSubtitle" class="text-2xl font-bold tracking-widest font-kaiti mb-1 text-stone-800">
-                        全名筆順寫字帖
+                        中文寫字帖
                     </h1>
-                    <div id="headerTagline" class="text-[11px] font-serif text-stone-500 tracking-wider uppercase">
-                        一筆一劃 ‧ 寫好名字
-                    </div>
 
                     <!-- Student Info Bar -->
                     <div class="mt-5 flex flex-wrap justify-between items-center text-xs font-serif text-stone-700 px-2 gap-y-2">
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">姓名：</span>
                             <div class="border-b border-stone-400 px-3 min-w-[100px] h-6 flex items-center justify-center font-bold text-stone-900 font-kaiti">
-                                <span id="displayName">王詩涵</span>
+                                <span id="displayName"> </span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">班別：</span>
                             <div class="border-b border-stone-400 px-3 min-w-[90px] h-6 flex items-center justify-center font-kaiti">
-                                <span id="displayClass">K3A 大班</span>
+                                <span id="displayClass"> </span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
                             <span class="whitespace-nowrap text-stone-500">日期：</span>
                             <div class="border-b border-stone-400 px-3 min-w-[110px] h-6 flex items-center justify-center font-kaiti">
-                                <span id="displayDate">____/____/____</span>
+                                <span id="displayDate"> </span>
                             </div>
                         </div>
                     </div>
@@ -405,7 +395,7 @@
 
                 <!-- Footer Page Label -->
                 <div class="mt-8 text-center text-[10px] text-stone-400 border-t border-stone-200 pt-3 flex justify-between items-center font-serif">
-                    <span>標準繁體楷體筆順字帖 ‧ 繁體字學習練習</span>
+                    <span>標準繁體筆順字帖練習</span>
                     <span>頁碼 1 / 1</span>
                 </div>
 
@@ -677,7 +667,7 @@
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <span class="font-serif font-bold text-stone-800 text-xs">字 ${idx + 1} (${char}) 插圖圖示：</span>
+                        <span class="font-serif font-bold text-stone-800 text-xs">文字 ${idx + 1} (${char}) 插圖圖示：</span>
                         ${customIllustrations[idx] ? `<button onclick="resetIllustration(${idx})" class="text-[10px] text-amber-700 hover:underline">恢復預設</button>` : ''}
                     </div>
                     <div class="flex items-center gap-2">
@@ -847,8 +837,8 @@
         }
 
         async function renderWorksheet() {
-            const name = document.getElementById('inputName').value.trim() || '王詩涵';
-            const subtitle = document.getElementById('inputSubtitle').value.trim() || '全名筆順寫字帖';
+            const name = document.getElementById('inputName').value.trim() || ' ';
+            const subtitle = document.getElementById('inputSubtitle').value.trim() || '中文寫字帖';
             const studentClass = document.getElementById('inputClass').value.trim();
             const dateStr = document.getElementById('inputDate').value.trim();
 
@@ -873,8 +863,8 @@
             document.getElementById('headerSubtitle').className = `text-2xl font-bold tracking-widest font-kaiti mb-1 ${baseTheme.titleColor}`;
             document.getElementById('headerSubtitle').innerText = subtitle;
             document.getElementById('displayName').innerText = name;
-            document.getElementById('displayClass').innerText = studentClass || '____';
-            document.getElementById('displayDate').innerText = dateStr || '____/____/____';
+            document.getElementById('displayClass').innerText = studentClass || ' ';
+            document.getElementById('displayDate').innerText = dateStr || ' ';
 
             // Toggle Decorations
             const showSchoolLogo = document.getElementById('showSchoolLogo').checked;
@@ -909,11 +899,8 @@
                 // Pronunciation & Char Header
                 let headerHTML = `
                     <div class="flex items-center gap-3 mb-2 pb-1.5 border-b border-stone-200/60">
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded ${theme.accentBadge}">字 ${i + 1}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded ${theme.accentBadge}">文字 ${i + 1}</span>
                         ${pinyinMode !== 'none' ? `<span class="text-xs font-semibold text-stone-700 tracking-wider font-mono bg-white px-2 py-0.5 rounded border border-stone-200">${pronText}</span>` : ''}
-                        <button onclick="openAnimForChar('${char}')" class="no-print text-[11px] text-amber-700 hover:text-amber-800 font-medium ml-auto flex items-center gap-1">
-                            <i class="fa-solid fa-play-circle text-xs"></i> 播放動畫
-                        </button>
                     </div>
                 `;
 
@@ -1108,7 +1095,7 @@
                 }
             }).then(canvas => {
                 const link = document.createElement('a');
-                const name = document.getElementById('inputName').value.trim() || '姓名字帖';
+                const name = document.getElementById('inputName').value.trim() || '練習字帖';
                 link.download = `${name}_筆順練習字帖.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
