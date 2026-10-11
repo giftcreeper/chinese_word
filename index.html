@@ -613,30 +613,9 @@
                 return customIllustrations[index];
             }
             if (DEFAULT_ILLUSTRATIONS[char]) {
-                return { type: 'emoji', emoji: DEFAULT_ILLUSTRATIONS[char].emoji, word: DEFAULT_ILLUSTRATIONS[char].word, imageUrl: '' };
+                return { emoji: DEFAULT_ILLUSTRATIONS[char].emoji, word: DEFAULT_ILLUSTRATIONS[char].word };
             }
-            return { type: 'emoji', emoji: '🌟', word: `${char}字`, imageUrl: '' };
-        }
-
-        function handleImageUpload(index, event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const dataUrl = e.target.result;
-                const char = Array.from(document.getElementById('inputName').value.trim())[index] || '字';
-                const currentInfo = getIllustrationInfo(char, index);
-
-                customIllustrations[index] = {
-                    type: 'image',
-                    emoji: currentInfo.emoji,
-                    word: currentInfo.word,
-                    imageUrl: dataUrl
-                };
-                renderWorksheet();
-            };
-            reader.readAsDataURL(file);
+            return { emoji: '🌟', word: `${char}字` };
         }
 
         function resetIllustration(index) {
@@ -651,44 +630,35 @@
             characters.forEach((char, idx) => {
                 const info = getIllustrationInfo(char, idx);
                 const card = document.createElement('div');
-                card.className = 'p-2.5 bg-white border border-stone-200 rounded-lg space-y-2 text-xs shadow-sm';
+                card.className = 'p-3 bg-white border border-stone-200 rounded-lg space-y-2 text-xs shadow-xs';
 
-                let imagePreviewHTML = '';
-                if (info.type === 'image' && info.imageUrl) {
-                    imagePreviewHTML = `<div class="w-8 h-8 rounded border overflow-hidden flex-shrink-0 bg-stone-50"><img src="${info.imageUrl}" class="w-full h-full object-contain"/></div>`;
-                } else {
-                    imagePreviewHTML = `<div class="w-8 h-8 rounded border flex items-center justify-center text-lg bg-amber-50 flex-shrink-0">${info.emoji}</div>`;
-                }
-
-                let presetButtonsHTML = PRESET_EMOJIS.slice(0, 8).map(e => `
-                    <button onclick="customIllustrations[${idx}] = { type: 'emoji', emoji: '${e}', word: '${info.word}', imageUrl: '' }; renderWorksheet();" 
-                        class="hover:bg-stone-100 p-0.5 rounded text-xs">${e}</button>
+                let presetButtonsHTML = PRESET_EMOJIS.map(e => `
+                    <button type="button" onclick="customIllustrations[${idx}] = { emoji: '${e}', word: '${info.word}' }; renderWorksheet();" 
+                        class="hover:bg-amber-100 p-1 rounded text-sm transition leading-none shrink-0">${e}</button>
                 `).join('');
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <span class="font-serif font-bold text-stone-800 text-xs">文字 ${idx + 1} (${char}) 插圖圖示：</span>
-                        ${customIllustrations[idx] ? `<button onclick="resetIllustration(${idx})" class="text-[10px] text-amber-700 hover:underline">恢復預設</button>` : ''}
+                        <span class="font-serif font-bold text-stone-800 text-xs">文字 ${idx + 1} (${char}) 插圖與詞語：</span>
+                        ${customIllustrations[idx] ? `<button type="button" onclick="resetIllustration(${idx})" class="text-[10px] text-amber-700 hover:underline">恢復預設</button>` : ''}
                     </div>
-                    <div class="flex items-center gap-2">
-                        ${imagePreviewHTML}
-                        
-                        <label class="cursor-pointer bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 px-2.5 py-1 rounded text-[11px] font-medium flex items-center gap-1 transition">
-                            <i class="fa-solid fa-camera text-amber-600"></i> 上傳圖片
-                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(${idx}, event)">
-                        </label>
-
-                        <input type="text" value="${info.emoji}" placeholder="圖示"
-                            oninput="customIllustrations[${idx}] = { type: 'emoji', emoji: this.value || '🌟', word: '${info.word}', imageUrl: '' }; renderWorksheet();"
-                            class="w-10 text-center px-1 py-1 border border-stone-300 rounded text-xs bg-white">
-                        
-                        <input type="text" value="${info.word}" placeholder="搭配詞語"
-                            oninput="customIllustrations[${idx}] = { type: info.type || 'emoji', emoji: '${info.emoji}', word: this.value, imageUrl: '${info.imageUrl || ''}' }; renderWorksheet();"
-                            class="flex-1 px-2 py-1 border border-stone-300 rounded text-xs bg-white">
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <div class="col-span-4 flex items-center gap-1.5 bg-stone-50 p-1.5 rounded-md border border-stone-200">
+                            <span class="text-[11px] text-stone-400 font-serif shrink-0">圖示</span>
+                            <input type="text" value="${info.emoji}" placeholder="Emoji"
+                                oninput="customIllustrations[${idx}] = { emoji: this.value || '🌟', word: '${info.word}' }; renderWorksheet();"
+                                class="w-full text-center py-1 border border-stone-300 rounded text-base font-sans bg-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div class="col-span-8 flex items-center gap-1.5 bg-stone-50 p-1.5 rounded-md border border-stone-200">
+                            <span class="text-[11px] text-stone-400 font-serif shrink-0">組詞</span>
+                            <input type="text" value="${info.word}" placeholder="請輸入詞語"
+                                oninput="customIllustrations[${idx}] = { emoji: '${info.emoji}', word: this.value }; renderWorksheet();"
+                                class="w-full px-2 py-1 border border-stone-300 rounded text-xs font-serif bg-white focus:outline-none focus:border-amber-500">
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1 pt-1 border-t border-stone-100 text-[10px] text-stone-400">
-                        <span>快速點選：</span>
-                        <div class="flex gap-1 overflow-x-auto">${presetButtonsHTML}</div>
+                    <div class="pt-1.5 border-t border-stone-100 flex items-center gap-1 text-stone-500">
+                        <span class="text-[10px] text-stone-400 font-serif shrink-0">快捷 Emoji:</span>
+                        <div class="flex gap-1 overflow-x-auto pb-0.5">${presetButtonsHTML}</div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -862,7 +832,7 @@
             // Update Sheet Header Text
             document.getElementById('headerSubtitle').className = `text-2xl font-bold tracking-widest font-kaiti mb-1 ${baseTheme.titleColor}`;
             document.getElementById('headerSubtitle').innerText = subtitle;
-            document.getElementById('displayName').innerText = name;
+            document.getElementById('displayName').innerText = '';
             document.getElementById('displayClass').innerText = studentClass || ' ';
             document.getElementById('displayDate').innerText = dateStr || ' ';
 
@@ -950,16 +920,9 @@
                         illustBox.className = 'w-16 h-16 rounded border bg-white flex flex-col items-center justify-center p-1 relative shadow-xs overflow-hidden';
                         illustBox.style.borderColor = theme.gridBorder;
 
-                        let imgOrEmojiHTML = '';
-                        if (illustInfo.type === 'image' && illustInfo.imageUrl) {
-                            imgOrEmojiHTML = `<img src="${illustInfo.imageUrl}" class="w-9 h-9 object-contain" />`;
-                        } else {
-                            imgOrEmojiHTML = `<span class="text-2xl leading-none">${illustInfo.emoji}</span>`;
-                        }
-
                         illustBox.innerHTML = `
-                            ${imgOrEmojiHTML}
-                            <span class="text-[9px] font-serif font-bold text-stone-700 mt-0.5 tracking-tighter truncate max-w-full">${illustInfo.word}</span>
+                            <span class="text-2xl leading-none flex items-center justify-center my-auto">${illustInfo.emoji || '🌟'}</span>
+                            <span class="text-[9px] font-serif font-bold text-stone-700 tracking-tighter truncate max-w-full text-center pb-0.5">${illustInfo.word || ''}</span>
                         `;
                         bigCellWrapper.appendChild(illustBox);
                     }
